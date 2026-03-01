@@ -1,0 +1,49 @@
+<!--
+README
+1) Set GROQ_API_KEY in your Vercel project Environment Variables.
+2) Deploy to Vercel so /api/quote runs server-side.
+3) Optional local run: install Vercel CLI and run `vercel dev` from this folder.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Quote</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="card" aria-live="polite">
+      <header class="card-head">
+        <h1>Daily Quote</h1>
+        <p class="muted">Updated daily</p>
+      </header>
+
+      <div class="segment" role="tablist" aria-label="Quote category">
+        <button class="segment-btn active" data-category="Motivation" role="tab" aria-selected="true">Motivation</button>
+        <button class="segment-btn" data-category="Islamic Reminder" role="tab" aria-selected="false">Islamic Reminder</button>
+        <button class="segment-btn" data-category="Study Discipline" role="tab" aria-selected="false">Study Discipline</button>
+      </div>
+
+      <article class="quote-wrap">
+        <p id="quoteText" class="quote-text">Loading quote...</p>
+      </article>
+
+      <div class="actions">
+        <button id="newQuoteBtn" class="btn btn-accent" type="button">New quote (today)</button>
+        <button id="copyBtn" class="btn" type="button">Copy</button>
+      </div>
+
+      <footer class="footer">Made by Fuhad</footer>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="assertive">Copied</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
