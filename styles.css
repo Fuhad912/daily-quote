@@ -95,7 +95,7 @@ body[data-theme="night"] {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: 20px;
 }
 
 .card {
@@ -248,8 +248,8 @@ body[data-theme="night"] {
 }
 
 .actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -263,6 +263,7 @@ body[data-theme="night"] {
   font-size: 0.92rem;
   cursor: pointer;
   transition: transform 0.15s ease, background-color 0.18s ease, border-color 0.18s ease;
+  min-height: 42px;
 }
 
 .btn:hover {
@@ -366,7 +367,8 @@ body[data-theme="night"] {
 }
 
 .favorite-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -398,20 +400,101 @@ body[data-theme="night"] {
   transform: translate(-50%, 0);
 }
 
-@media (max-width: 720px) {
+@media (max-width: 900px) {
   .card {
-    padding: 20px;
-    gap: 16px;
+    width: min(720px, 100%);
+  }
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 14px;
+  }
+
+  .card {
+    padding: 16px;
+    gap: 14px;
     border-radius: 12px;
   }
 
   .card-head {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
 
   .theme-switch {
-    width: fit-content;
+    width: 100%;
+  }
+
+  .segment {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .segment-btn {
+    font-size: 0.84rem;
+    padding: 9px 6px;
+  }
+
+  .quote-wrap {
+    min-height: 170px;
+    padding: 18px;
+    gap: 10px;
+  }
+
+  .quote-category {
+    font-size: 0.78rem;
+  }
+
+  .quote-text {
+    font-size: clamp(1.45rem, 6vw, 2.1rem);
+    line-height: 1.3;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .favorites-panel.open {
+    max-height: 460px;
+    padding: 12px;
+  }
+
+  .favorites-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .favorites-list {
+    max-height: 240px;
+  }
+}
+
+@media (max-width: 420px) {
+  .page {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .card-head h1 {
+    font-size: 1.18rem;
+  }
+
+  .greeting {
+    font-size: 0.98rem;
+  }
+
+  .theme-btn,
+  .segment-btn {
+    font-size: 0.8rem;
   }
 
   .segment {
@@ -419,10 +502,19 @@ body[data-theme="night"] {
   }
 
   .quote-wrap {
-    min-height: 200px;
+    min-height: 150px;
+    padding: 14px;
+  }
+
+  .quote-text {
+    font-size: clamp(1.35rem, 7.2vw, 1.8rem);
   }
 
   .favorites-panel.open {
-    max-height: 460px;
+    max-height: 420px;
+  }
+
+  .favorite-actions {
+    grid-template-columns: 1fr;
   }
 }
