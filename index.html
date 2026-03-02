@@ -9,7 +9,7 @@ README
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daily Quote</title>
+  <title>Fuhad Daily Quote</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap" rel="stylesheet" />
@@ -19,8 +19,16 @@ README
   <main class="page">
     <section class="card" aria-live="polite">
       <header class="card-head">
-        <h1>Daily Quote</h1>
-        <p class="muted">Updated daily</p>
+        <div>
+          <p id="greeting" class="greeting">Good day, Fuhad</p>
+          <h1>Fuhad Daily Quote</h1>
+          <p class="muted">Updated daily</p>
+        </div>
+        <div class="theme-switch" role="tablist" aria-label="Theme">
+          <button class="theme-btn active" data-theme="warm" role="tab" aria-selected="true" type="button">Warm</button>
+          <button class="theme-btn" data-theme="light" role="tab" aria-selected="false" type="button">Light</button>
+          <button class="theme-btn" data-theme="night" role="tab" aria-selected="false" type="button">Night</button>
+        </div>
       </header>
 
       <div class="segment" role="tablist" aria-label="Quote category">
@@ -30,13 +38,26 @@ README
       </div>
 
       <article class="quote-wrap">
+        <p id="quoteCategory" class="quote-category">Motivation</p>
         <p id="quoteText" class="quote-text">Loading quote...</p>
       </article>
 
       <div class="actions">
         <button id="newQuoteBtn" class="btn btn-accent" type="button">New quote (today)</button>
         <button id="copyBtn" class="btn" type="button">Copy</button>
+        <button id="saveFavoriteBtn" class="btn" type="button">Save</button>
+        <button id="shareImageBtn" class="btn" type="button">Share image</button>
+        <button id="toggleFavoritesBtn" class="btn" type="button" aria-expanded="false" aria-controls="favoritesPanel">Favorites (0)</button>
       </div>
+
+      <section id="favoritesPanel" class="favorites-panel" aria-hidden="true">
+        <div class="favorites-head">
+          <h2>Favorites</h2>
+          <button id="clearFavoritesBtn" class="btn btn-small" type="button">Clear all</button>
+        </div>
+        <p id="favoritesEmpty" class="favorites-empty">No favorites yet.</p>
+        <ul id="favoritesList" class="favorites-list"></ul>
+      </section>
 
       <footer class="footer">Made by Fuhad</footer>
     </section>
