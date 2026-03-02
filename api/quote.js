@@ -22,7 +22,7 @@ const FALLBACK_QUOTES = {
   ]
 };
 
-const PROMPTS = {
+const BASE_PROMPTS = {
   "Motivation": [
     "Write one short, punchy motivational line.",
     "Maximum 20 words.",
@@ -46,13 +46,8 @@ const PROMPTS = {
 
 function normalizeCategory(category) {
   if (!category || typeof category !== "string") return "Motivation";
-  if (category in PROMPTS) return category;
+  if (category in BASE_PROMPTS) return category;
   return "Motivation";
-}
-
-function pickFallback(category) {
-  const list = FALLBACK_QUOTES[category] || FALLBACK_QUOTES["Motivation"];
-  return list[Math.floor(Math.random() * list.length)];
 }
 
 function sanitizeQuote(text) {
@@ -64,12 +59,52 @@ function sanitizeQuote(text) {
   return quote;
 }
 
+function canonicalizeQuote(text) {
+  return sanitizeQuote(text).toLowerCase();
+}
+
+function parseExcludedQuotes(value) {
+  if (!value) return [];
+  const rawValue = Array.isArray(value) ? value[value.length - 1] : value;
+  if (typeof rawValue !== "string") return [];
+
+  try {
+    const parsed = JSON.parse(rawValue);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((item) => sanitizeQuote(item)).filter(Boolean).slice(-8);
+  } catch (error) {
+    return [];
+  }
+}
+
+function pickFallback(category, excludedCanonical) {
+  const list = FALLBACK_QUOTES[category] || FALLBACK_QUOTES.Motivation;
+  const nonDuplicateList = list.filter((quote) => !excludedCanonical.has(canonicalizeQuote(quote)));
+  const selectedList = nonDuplicateList.length ? nonDuplicateList : list;
+  return selectedList[Math.floor(Math.random() * selectedList.length)];
+}
+
+function buildPrompt(category, excludedQuotes) {
+  if (!excludedQuotes.length) {
+    return BASE_PROMPTS[category];
+  }
+
+  const bannedList = excludedQuotes.map((quote, index) => `${index + 1}. ${quote}`).join(" ");
+  return [
+    BASE_PROMPTS[category],
+    "Avoid duplicates. Do not return or closely paraphrase any of these lines:",
+    bannedList
+  ].join(" ");
+}
+
 export default async function handler(req, res) {
   const category = normalizeCategory(req.query.category);
+  const excludedQuotes = parseExcludedQuotes(req.query.exclude);
+  const excludedCanonical = new Set(excludedQuotes.map((quote) => canonicalizeQuote(quote)));
   const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
-    return res.status(200).json({ quote: pickFallback(category) });
+    return res.status(200).json({ quote: pickFallback(category, excludedCanonical) });
   }
 
   try {
@@ -89,7 +124,7 @@ export default async function handler(req, res) {
           },
           {
             role: "user",
-            content: PROMPTS[category]
+            content: buildPrompt(category, excludedQuotes)
           }
         ]
       })
@@ -107,8 +142,12 @@ export default async function handler(req, res) {
       throw new Error("Empty quote from Groq");
     }
 
+    if (excludedCanonical.has(canonicalizeQuote(quote))) {
+      return res.status(200).json({ quote: pickFallback(category, excludedCanonical) });
+    }
+
     return res.status(200).json({ quote });
   } catch (error) {
-    return res.status(200).json({ quote: pickFallback(category) });
+    return res.status(200).json({ quote: pickFallback(category, excludedCanonical) });
   }
 }
